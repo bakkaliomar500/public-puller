@@ -42,7 +42,7 @@ jobs:
         run: |
           npm ci || npm install
           npm run build --if-present
-          npm start &
+          PORT=3001 npm start &
           sleep 10
 
       - name: Checkout gp-explorer (private)
