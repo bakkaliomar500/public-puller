@@ -10,18 +10,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Setup SSH tunnel
+      - name: Install sshpass
+        run: sudo apt-get update && sudo apt-get install -y sshpass
+
+      - name: Create SSH tunnel (password-based)
+        shell: bash
+        env:
+          SSH_PASSWORD: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh -o StrictHostKeyChecking=no \
-              -i ~/.ssh/id_ed25519 \
-              -N \
-              -L 127.0.0.1:27017:127.0.0.1:27017 \
-              -L 127.0.0.1:6379:127.0.0.1:6379 \
-              tunnel@75.119.156.81 &
-          sleep 5
+          ssh-keyscan -H 75.119.156.81 >> ~/.ssh/known_hosts
+
+          sshpass -p "$SSH_PASSWORD" ssh -N \
+            -o PreferredAuthentications=password \
+            -o PubkeyAuthentication=no \
+            -o StrictHostKeyChecking=yes \
+            -o ExitOnForwardFailure=yes \
+            -L 127.0.0.1:27017:127.0.0.1:27017 \
+            -L 127.0.0.1:6379:127.0.0.1:6379 \
+            root@75.119.156.81 &
+          sleep 3
 
       - name: Checkout gp-api (private)
         uses: actions/checkout@v4
