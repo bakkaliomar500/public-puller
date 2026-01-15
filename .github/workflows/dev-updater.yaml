@@ -1,4 +1,4 @@
-name: Run search
+name: Run updater devs
 
 on:
   workflow_dispatch:
@@ -48,7 +48,7 @@ jobs:
         run: |
           npm ci || npm install
           npm run build --if-present
-          npm run seed:search
+          npm run update:devs
 
       - name: Remove this runner IP from MongoDB + Redis allowlist (fw-controller)
         if: always()
