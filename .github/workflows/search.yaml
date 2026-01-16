@@ -48,7 +48,7 @@ jobs:
         run: |
           npm ci || npm install
           npm run build --if-present
-          npm run seed:search
+          npm run seed:search -- --start iac
 
       - name: Remove this runner IP from MongoDB + Redis allowlist (fw-controller)
         if: always()
