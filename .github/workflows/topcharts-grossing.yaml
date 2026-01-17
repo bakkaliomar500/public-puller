@@ -1,4 +1,4 @@
-name: Run topcharts free
+name: Run topcharts grossing
 
 on:
   workflow_dispatch:
@@ -48,7 +48,7 @@ jobs:
         run: |
           npm ci || npm install
           npm run build --if-present
-          npm run seed:topcharts:free
+          npm run seed:topcharts:grossing
 
       - name: Remove this runner IP from MongoDB + Redis allowlist (fw-controller)
         if: always()
